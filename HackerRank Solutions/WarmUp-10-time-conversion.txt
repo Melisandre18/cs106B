@@ -1,0 +1,74 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+/*
+ * Complete the 'timeConversion' function below.
+ *
+ * The function is expected to return a STRING.
+ * The function accepts STRING s as parameter.
+ */
+
+string timeConversion(string s) {
+    //07:05:45PM
+    string t=s.substr(s.size()-2);
+    s=s.substr(0, s.size()-2);
+    string now = s.substr(0,2);
+    if(t=="PM"){
+        if(now=="01"){
+             now="13";
+             s=now+s.substr(2);
+        }else if(now=="02"){
+             now="14";
+             s=now+s.substr(2);
+        }else if(now=="03"){
+             now="15";
+             s=now+s.substr(2);
+        }else if(now=="04"){
+             now="16";
+             s=now+s.substr(2);
+        }else if(now=="05"){
+             now="17";
+             s=now+s.substr(2);
+        }else if(now=="06"){
+             now="18";
+             s=now+s.substr(2);
+        }else if(now=="07"){
+             now="19";
+             s=now+s.substr(2);
+        }else if(now=="08"){
+             now="20";
+             s=now+s.substr(2);
+        }else if(now=="09"){
+             now="21";
+             s=now+s.substr(2);
+        }else if(now=="10"){
+             now="22";
+             s=now+s.substr(2);
+        }else if(now=="11"){
+             now="23";
+             s=now+s.substr(2);
+        }
+    }else{
+        if(now=="12")
+        now="00";
+        s=now+s.substr(2);
+    }
+        return s;
+}
+
+int main()
+{
+    ofstream fout(getenv("OUTPUT_PATH"));
+
+    string s;
+    getline(cin, s);
+
+    string result = timeConversion(s);
+
+    fout << result << "\n";
+
+    fout.close();
+
+    return 0;
+}

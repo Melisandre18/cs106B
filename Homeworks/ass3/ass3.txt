@@ -1,0 +1,249 @@
+#1
+bool isSubsequence(string text, string subsequence){
+	string sub=subsequence;
+	if(sub.length()==0) return true;
+	if(sub.length()!=1){
+	if(text.find(sub[0])<text.find(sub[1])){
+		 return isSubsequence(text,sub.substr(1));
+	}
+	}else{
+		if(text.find(sub[0])<text.length()) return true;
+	}
+	return false;
+};
+
+int main() {
+	string one=getLine();
+	string two=getLine();
+	cout<<isSubsequence(one,two)<<endl;
+    // [TODO: fill with your code]
+    return 0;
+}
+------------------------------------
+#2
+
+const int ang1=60;
+const int ang2=-60;
+const int ang3=180;
+const int gwWidth=600;
+const int gwHeight=600;
+const double forHeight=sqrt(3.0);
+
+void drawTriangle(GWindow& gw, double x, double y, double size, int order){
+	if(order<0) return;
+
+  GPoint ep1 =gw.drawPolarLine(x,y,size,ang1);
+  GPoint ep2=gw.drawPolarLine(ep1.getX(),ep1.getY(),size,ang2);
+  GPoint ep3=gw.drawPolarLine(ep2.getX(), ep2.getY(),size,ang3);
+
+  drawTriangle(gw,ep3.getX(),ep3.getY(),size/2,order-1);
+  drawTriangle(gw,ep3.getX()+size/2,ep3.getY(),size/2,order-1);
+  drawTriangle(gw,ep3.getX()+size/4,ep3.getY()-(forHeight*size/4),size/2,order-1);
+
+
+};
+
+int main() {
+	GWindow gw(gwWidth,gwHeight);
+	double edge= getReal("please enter edge size: ");
+	int order =getInteger("please enter order: ");
+	drawTriangle(gw,(gw.getWidth()/2)-edge/2, (gw.getHeight()/2)+forHeight*edge/4,edge,order);
+    return 0;
+}
+--------------------------------------------------
+#3
+
+void forListing(string protein, Map<char, Set<string> >& codons, string str) {
+    if (protein.size() == 0) {
+        cout << str << endl;
+        return;
+    } 
+        Set<string> forOne = codons.get(protein[0]);
+        foreach (string s in forOne) {
+			string newstr=str;
+			newstr+=s;
+            forListing(protein.substr(1), codons, newstr);
+			 }
+};
+
+/* Function: listAllRNAStrandsFor(string protein,
+ *                                Map<char, Set<string> >& codons);
+ * Usage: listAllRNAStrandsFor("PARTY", codons);
+ * ==================================================================
+ * Given a protein and a map from amino acid codes to the codons for
+ * that code, lists all possible RNA strands that could generate
+ * that protein
+ */
+void listAllRNAStrandsFor(string protein, Map<char, Set<string> >& codons){
+	string str;
+   forListing(protein, codons, str);
+};
+
+/* Function: loadCodonMap();
+ * Usage: Map<char, Lexicon> codonMap = loadCodonMap();
+ * ==================================================================
+ * Loads the codon mapping table from a file.
+ */
+Map<char, Set<string> > loadCodonMap();
+
+int main() {
+    /* Load the codon map. */
+    Map<char, Set<string> > codons = loadCodonMap();
+	string prt=getLine("Enter protein: ");
+	listAllRNAStrandsFor(prt,codons);
+    return 0;
+}
+
+/* You do not need to change this function. */
+Map<char, Set<string> > loadCodonMap() {
+    ifstream input("codons.txt");
+    Map<char, Set<string> > result;
+
+    /* The current codon / protein combination. */
+    string codon;
+    char protein;
+
+    /* Continuously pull data from the file until all data has been
+     * read.
+     */
+    while (input >> codon >> protein) {
+        result[protein] += codon;
+    }
+
+    return result;
+}
+-----------------------------------------------------------------------
+#4
+
+bool canOfferUniversalCoverage(Set<string>& cities,
+                               Vector< Set<string> >& locations,
+                               int numHospitals,
+							   Vector< Set<string> >& result){
+ Vector<Set<string>>locsToDelete=locations;
+ Set<string> sub;
+ for(int i=0; i<result.size(); i++){
+	 sub+=result[i];
+ }
+if(cities.isSubsetOf(sub)) return true;
+if(numHospitals=0) return false;
+for(int i=0; i<locations.size(); i++){
+    result.add(locations[i]);
+	locsToDelete.remove(i);
+if(canOfferUniversalCoverage(cities,locsToDelete,numHospitals-1,result)) return true;
+result.remove(result.size()-1);
+}
+return false;
+};
+---------------------------------------------------------------------------------------
+bool ifSubset(Set<string>st, Vector<Set<string>>vec){
+	Set<string>ForVec;
+	for(int i=0; i<vec.size() ; i++){
+		ForVec+=vec.get(i);
+	}
+	if(st.isSubsetOf(ForVec)) return true;
+	return false;
+};
+bool canOfferUniversalCoverage(Set<string>& cities,
+                               Vector< Set<string> >& locations,
+                               int numHospitals,
+							   Vector< Set<string> >& result){
+								  
+if(ifSubset(cities,result)) return true;
+if(numHospitals==0) return false;
+ Set<string> sub;
+ int count=0;
+ for(int i=0; i<locations.size(); i++){
+	 sub+=locations[i];
+	 if(!ifSubset(sub,result)){
+	 foreach(string s in cities){
+		if(sub.contains(s)){
+			  count++;
+		 }
+	 }}
+	 else{
+		 sub.clear();
+		 sub+=locations[i+1];
+		  foreach(string s in cities){
+		if(sub.contains(s)){
+			  count++;
+		 }
+	 }
+	 }
+	 Set<string>cur=locations.get(i);
+	 locations.remove(i);
+	 if(count>0) result.add(sub);
+	 if (!canOfferUniversalCoverage(cities,locations,numHospitals-1,result)){
+		 if(result.size()==1) result.add(sub);
+		 result.remove(result.size()-1);
+		 locations.remove(i);
+		 locations.insert(0,cur);
+		 return canOfferUniversalCoverage(cities,locations,numHospitals-1,result);
+		 
+	 }
+		 return true;
+ }
+ return false;
+};
+----------------------------------------------------------------------------------------------------
+ bool ifSubset(Set<string>st, Vector<Set<string>>vec){
+	Set<string>ForVec;
+	for(int i=0; i<vec.size() ; i++){
+		ForVec+=vec.get(i);
+	}
+	if(st.isSubsetOf(ForVec)) return true;
+	return false;
+};
+bool canOfferUniversalCoverage(Set<string>& cities,
+                               Vector< Set<string> >& locations,
+                               int numHospitals,
+							   Vector< Set<string> >& result){
+								  
+if (numHospitals==0) return ifSubset(cities,result);
+foreach(Set<string>loc in locations){
+	result.add(loc);
+	Vector<Set<string>>others;
+	foreach(Set<string>locs in locations){
+		if(locs!=loc){
+			others+=locs;
+		}
+	}
+	if(canOfferUniversalCoverage(cities, others, numHospitals-1, result)) return true;
+		else  result.remove(result.size()-1);	
+		cout<<result<<endl;
+}
+return false;
+};
+
+
+int main() {
+    Set<string> cities;
+	Vector<Set<string> > locations(5);
+	Vector<Set<string> > result;
+	cities.add("A");
+	cities.add("B");
+	cities.add("C");
+	cities.add("D");
+	cities.add("E");
+	cities.add("F");
+	cities.add("G");
+	locations[0].add("A");
+	locations[0].add("B");
+	locations[1].add("A");
+	locations[1].add("C");
+	locations[1].add("D");
+	locations[2].add("B");
+	locations[2].add("F");
+	locations[3].add("C");
+	locations[3].add("D");
+	locations[3].add("E");
+	locations[4].add("G");
+    int numHospitals=getInteger("Enter number of hospitals ");
+	if(numHospitals<1||numHospitals>locations.size()) numHospitals=getInteger("Enter Valid Number: ");
+	if(canOfferUniversalCoverage(cities,locations,numHospitals,result)){
+		cout<<"You can cover cities" <<endl;
+		cout<<result<<endl;
+	} else{
+		cout<<"No way to cover cities"<<endl;
+	}
+    return 0;
+}
